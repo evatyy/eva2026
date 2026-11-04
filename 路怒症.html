@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>互動網頁</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1a1a1a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background-color: #2a2a2a;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            text-align: center;
+            max-width: 450px;
+            width: 100%;
+            color: #fff;
+        }
+        .input-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #ccc;
+            font-weight: bold;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #444;
+            background-color: #333;
+            color: #fff;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+        select option[value=""] {
+            color: #888;
+        }
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        button {
+            flex: 1;
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        .btn-bad {
+            background-color: #ff3333;
+        }
+        .btn-bad:hover {
+            background-color: #cc0000;
+        }
+        .btn-good {
+            background-color: #2e7d32;
+        }
+        .btn-good:hover {
+            background-color: #1b5e20;
+        }
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            font-size: 18px;
+            font-weight: bold;
+            line-height: 1.5;
+            background-color: #3a3a3a;
+            color: #aaa;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="input-group">
+        <label for="userName">駕駛名稱：</label>
+        <input type="text" id="userName">
+    </div>
+    
+    <div class="input-group">
+        <label for="badEvent">😡 崩潰路況（壞心情）：</label>
+        <select id="badEvent">
+            <option value="" selected disabled hidden>請點選</option>
+            <option value="cutIn">惡意插隊超車</option>
+            <option value="slowCar">龜速車強佔內線快車道</option>
+            <option value="noSignal">轉彎／切換車道不打方向燈</option>
+            <option value="tailgate">後方車輛貼超近惡意逼車</option>
+            <option value="greenNoMove">綠燈亮了前車還在低頭滑手機</option>
+        </select>
+    </div>
+
+    <div class="input-group">
+        <label for="goodEvent">✨ 天使路況（好心情）：</label>
+        <select id="goodEvent">
+            <option value="" selected disabled hidden>請點選</option>
+            <option value="giveWay">主動禮讓並閃雙黃燈致謝</option>
+            <option value="allGreen">一路上前方全都是綠燈</option>
+            <option value="findParking">一到目的地剛好路邊有空車位</option>
+            <option value="radioSong">收音機剛好播放最喜歡的歌</option>
+            <option value="clearRoad">快遲到時高架橋上竟然完全沒塞車</option>
+        </select>
+    </div>
+    
+    <div class="button-group">
+        <button class="btn-bad" onclick="checkDrivingStatus('bad')">遭遇壞路況</button>
+        <button class="btn-good" onclick="checkDrivingStatus('good')">遇到好事情</button>
+    </div>
+    
+    <div id="result">請點選</div>
+</div>
+
+<script>
+    function checkDrivingStatus(type) {
+        const name = document.getElementById('userName').value.trim();
+        const resultDiv = document.getElementById('result');
+        
+        if (name === "") {
+            return;
+        }
+        
+        let message = "";
+        let backgroundColor = "";
+        let textColor = "";
+
+        if (type === 'bad') {
+            const event = document.getElementById('badEvent').value;
+            if (event === "") {
+                return;
+            }
+            switch (event) {
+                case 'cutIn':
+                    message = `🤬 [${name}] 路怒指數：99%！狂按喇叭加閃大燈，嘴裡開始口吐芬芳！`;
+                    backgroundColor = '#5c0000';
+                    textColor = '#ff6666';
+                    break;
+                case 'slowCar':
+                    message = `😤 [${name}] 路怒指數：80%！狂翻白眼，試圖從右側危險超車並投以鄙視眼神！`;
+                    backgroundColor = '#5c3a00';
+                    textColor = '#ffb366';
+                    break;
+                case 'noSignal':
+                    message = `🙄 [${name}] 路怒指數：50%！深吸一口氣，默默在心裡問候對方的駕駛執照。`;
+                    backgroundColor = '#3a3a3a';
+                    textColor = '#cccccc';
+                    break;
+                case 'tailgate':
+                    message = `😡 [${name}] 路怒指數：95%！故意輕點煞車警告後車，火藥味瞬間點燃！`;
+                    backgroundColor = '#5c001a';
+                    textColor = '#ff6699';
+                    break;
+                case 'greenNoMove':
+                    message = `🔊 [${name}] 路怒指數：75%！忍耐 1 秒後直接「叭——————」長聲喇叭伺候！`;
+                    backgroundColor = '#004d4d';
+                    textColor = '#66ffff';
+                    break;
+            }
+        } else if (type === 'good') {
+            const event = document.getElementById('goodEvent').value;
+            if (event === "") {
+                return;
+            }
+            switch (event) {
+                case 'giveWay':
+                    message = `🥰 [${name}] 心情愉悅度：100%！對方切車過來後閃了兩下雙黃燈打招呼，瞬間覺得世界充滿愛。`;
+                    backgroundColor = '#1a3a5c';
+                    textColor = '#66b3ff';
+                    break;
+                case 'allGreen':
+                    message = `🚗💨 [${name}] 心情愉悅度：120%！一路暢通無阻綠燈到底，神清氣爽！`;
+                    backgroundColor = '#004d26';
+                    textColor = '#66ffb3';
+                    break;
+                case 'findParking':
+                    message = `🥳 [${name}] 心情愉悅度：150%！完美倒車入庫，省去繞圈找位子的痛苦，今天真是幸運星！`;
+                    backgroundColor = '#3d0066';
+                    textColor = '#cc66ff';
+                    break;
+                case 'radioSong':
+                    message = `🎵 [${name}] 心情愉悅度：90%！前奏一下直接在車內大合唱，手敲方向盤跟著打節拍。`;
+                    backgroundColor = '#4d4d00';
+                    textColor = '#ffff66';
+                    break;
+                case 'clearRoad':
+                    message = `😎 [${name}] 心情愉悅度：200%！高架暢行無阻，不僅沒遲到還能好整以暇買杯咖啡。`;
+                    backgroundColor = '#1a1a3a';
+                    textColor = '#9999ff';
+                    break;
+            }
+        }
+
+        resultDiv.innerHTML = message;
+        resultDiv.style.backgroundColor = backgroundColor;
+        resultDiv.style.color = textColor;
+    }
+</script>
+
+</body>
+</html>

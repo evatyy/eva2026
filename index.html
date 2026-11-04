@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>互動網頁作業 - 首頁</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="logo">✨ 互動宇宙</div>
+        <ul class="nav-links">
+            <li><a href="index.html" class="active">首頁</a></li>
+            <li><a href="quiz.html">進行測驗</a></li>
+        </ul>
+    </nav>
+
+    <main class="container">
+        <div class="home-panel">
+            <header class="hero">
+                <h1>🔮 歡迎來到互動宇宙</h1>
+                <p>這是一個結合 CSS 特效與 JavaScript 邏輯的多頁式互動網站。</p>
+                <a href="quiz.html?playMusic=1" style="display: inline-block; background: white; color: #5a67d8; padding: 12px 30px; border-radius: 25px; font-weight: bold; text-decoration: none; box-shadow: 0 4px 10px rgba(0,0,0,0.15); transition: transform 0.2s;">前往下一頁測驗 ➔</a>
+            </header>
+
+            <section id="about" class="quiz-container">
+                <h2>👤 關於我</h2>
+                <p style="margin-top: 15px; line-height: 1.8; color: #4a5568;">
+                    嗨！我是這次網頁設計作業的創作者。這是我第一次挑戰將 HTML、CSS 與 JavaScript 結合，建立出一個具備動態心理測驗功能的互動式網頁。在學習前端設計的過程中，我發現透過程式碼讓網頁「動起來」是一件非常有成就感的事！
+                </p>
+            </section>
+
+            <section id="contact" class="quiz-container">
+                <h2>📬 聯絡我</h2>
+                <p style="margin-top: 15px; color: #4a5568;">如果你對這個測驗有任何想法，歡迎透過以下方式聯繫我：</p>
+                <div style="margin-top: 15px; color: #4a5568; line-height: 2;">
+                    <p>📧 電子信箱：xxxxx@gmail.com</p>
+                    <p>🏢 學校班級：xxxxx專班</p>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <audio id="home-music" preload="metadata" autoplay loop hidden>
+        <source src="輕音樂.mp3" type="audio/mpeg">
+    </audio>
+    <script>
+        const homeMusic = document.getElementById('home-music');
+        const homeParams = new URLSearchParams(window.location.search);
+        if (homeParams.get('showplayer') === '1') {
+            homeMusic.controls = true;
+            homeMusic.hidden = false;
+        }
+        homeMusic.play().catch(function() {
+            // 若瀏覽器限制自動播放，可用 ?showplayer=1 顯示播放器手動播放。
+        });
+    </script>
+
+</body>
+</html>

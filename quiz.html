@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>互動網頁作業 - 心理測驗</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="logo">✨ 互動宇宙</div>
+        <ul class="nav-links">
+            <li><a href="index.html">首頁</a></li>
+            <li><a href="quiz.html" class="active">進行測驗</a></li>
+        </ul>
+    </nav>
+
+    <main class="container">
+
+        <section id="quiz-section" class="quiz-container">
+            <h2>🔮 程式靈魂轉生測驗</h2>
+            <p class="subtitle">請憑直覺選擇最符合你的描述，送出後即可看到計算分數：</p>
+
+            <audio id="totoro-music" preload="auto" autoplay loop hidden>
+                <source src="龍貓.mp3" type="audio/mpeg">
+            </audio>
+
+            <form id="quiz-form">
+
+                <div class="quiz-card">
+                    <p class="question">1. 買衣服或挑選隨身物品時，你最看重什麼？</p>
+                    <label><input type="radio" name="q1" value="A"> 外觀一定要好看、有設計感，細節要完美</label>
+                    <label><input type="radio" name="q1" value="B"> 實用性第一，功能多、耐用、高效率才行</label>
+                    <label><input type="radio" name="q1" value="C"> 只要穿得舒適、有自己的框架和核心原則就好</label>
+                </div>
+
+                <div class="quiz-card">
+                    <p class="question">2. 和朋友出門聚會時，你通常是哪種人？</p>
+                    <label><input type="radio" name="q2" value="A"> 負責炒熱氣氛、拍照打卡，讓大家玩得開心</label>
+                    <label><input type="radio" name="q2" value="B"> 負責出鬼點子、隨機應變，解決各種突發狀況</label>
+                    <label><input type="radio" name="q2" value="C"> 默默在背後點餐、訂位，是不可或缺的骨幹</label>
+                </div>
+
+                <div class="quiz-card">
+                    <p class="question">3. 面對一件全新的挑戰或工作，你的反應是？</p>
+                    <label><input type="radio" name="q3" value="A"> 先想像完成後亮麗的成果，滿懷熱情地加入</label>
+                    <label><input type="radio" name="q3" value="B"> 開始思考邏輯和步驟，計算怎樣才能用最快速度搞定</label>
+                    <label><input type="radio" name="q3" value="C"> 先把最底層的基礎打好，確認核心架構穩固</label>
+                </div>
+
+                <button type="button" id="submit-btn">召喚我的程式化身！</button>
+                <a href="index.html" style="display: block; text-align: center; margin-top: 15px; color: #718096; text-decoration: none; font-weight: 500; font-size: 15px; transition: color 0.2s;" onmouseover="this.style.color='#5a67d8'" onmouseout="this.style.color='#718096'">
+                ⬅ 返回上一頁（首頁）
+                </a>
+            </form>
+
+        </section>
+
+        <section id="result" class="quiz-container result-box hidden">
+            <h3>✨ 測驗結果計算完成 ✨</h3>
+            <p id="score-display" style="font-size: 28px; font-weight: bold; margin: 15px 0; color: #2e7d32;">你的互動得分：0 分</p>
+            <h4 id="character-title" style="font-size: 20px; font-weight: bold; margin-bottom: 10px;">角色名稱</h4>
+            <p id="feedback-text">角色描述</p>
+            
+            <div id="naming-area" style="margin-top: 25px; padding-top: 20px; border-top: 1px dashed #ccc;">
+                <label for="user-codename" style="justify-content: center; font-weight: bold; display: flex; margin-bottom: 10px;">🏷️ 請輸入您的暱稱以進行系統綁定：</label>
+                <div style="display: flex; gap: 10px; max-width: 400px; margin: 0 auto;">
+                    <input type="text" id="user-codename" placeholder="請輸入暱稱..." style="flex: 1; padding: 10px; border: 1px solid #cbd5e0; border-radius: 8px; font-size: 15px;">
+                    <button type="button" id="name-btn" style="width: auto; padding: 10px 20px; font-size: 15px;">確認送出</button>
+                </div>
+                <p id="name-output" style="margin-top: 15px; font-weight: bold; font-size: 16px; text-align: center;"></p>
+            </div>
+        </section>
+
+        <section id="score-guide" class="quiz-container score-guide hidden" aria-labelledby="score-guide-title">
+            <h3 id="score-guide-title">📊 測驗計分方式</h3>
+            <table class="score-table">
+                <caption>每個答案可獲得的分數</caption>
+                <thead>
+                    <tr>
+                        <th scope="col">答案</th>
+                        <th scope="col">代表特質</th>
+                        <th scope="col">加分</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><th scope="row">A</th><td>美感與設計</td><td>+15 分</td></tr>
+                    <tr><th scope="row">B</th><td>邏輯與效率</td><td>+20 分</td></tr>
+                    <tr><th scope="row">C</th><td>穩定與架構</td><td>+10 分</td></tr>
+                </tbody>
+                <tfoot>
+                    <tr><th scope="row" colspan="2">基本分 40 分，最高 100 分</th><td>滿分 100</td></tr>
+                </tfoot>
+            </table>
+        </section>
+    </main>
+
+    <script>
+        if (new URLSearchParams(window.location.search).get('playMusic') === '1') {
+            document.querySelector('main.container').classList.add('page-bounce');
+        }
+
+        const showPlayer = new URLSearchParams(window.location.search).get('showplayer') === '1';
+        if (showPlayer) {
+            document.getElementById('totoro-music').controls = true;
+            document.getElementById('totoro-music').hidden = false;
+        }
+    </script>
+    <script src="script.js"></script>
+</body>
+</html>
