@@ -4,15 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>互動網頁作業 - 心理測驗</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@6.0.0-alpha.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-B/GM4XqrwHnWXNOWMbloTmrYXZg10cakYGmpfsR/bbzQ6JAJI4ihuyADKLnBgrCe" crossorigin="anonymous">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <nav class="navbar">
-        <div class="logo">✨ 互動宇宙</div>
+        <div class="logo">✨ 互動宇宙 [ Bootstrap 版]</div>
         <ul class="nav-links">
-            <li><a href="index.html">首頁</a></li>
-            <li><a href="quiz.html" class="active">進行測驗</a></li>
+            <li><a href="index.html" title="返回互動宇宙首頁">首頁</a></li>
+            <li><a href="quiz.html" class="active" title="目前所在的測驗頁面">進行測驗</a></li>
         </ul>
     </nav>
 
@@ -49,10 +50,14 @@
                     <label><input type="radio" name="q3" value="C"> 先把最底層的基礎打好，確認核心架構穩固</label>
                 </div>
 
-                <button type="button" id="submit-btn">召喚我的程式化身！</button>
-                <a href="index.html" style="display: block; text-align: center; margin-top: 15px; color: #718096; text-decoration: none; font-weight: 500; font-size: 15px; transition: color 0.2s;" onmouseover="this.style.color='#5a67d8'" onmouseout="this.style.color='#718096'">
+                <button type="button" id="submit-btn" class="btn btn-primary btn-lg" title="送出答案並查看測驗結果">召喚我的程式化身！</button>
+                <a href="index.html" title="返回互動宇宙首頁" style="display: block; text-align: center; margin-top: 15px; color: #718096; text-decoration: none; font-weight: 500; font-size: 15px; transition: color 0.2s;" onmouseover="this.style.color='#5a67d8'" onmouseout="this.style.color='#718096'">
                 ⬅ 返回上一頁（首頁）
                 </a>
+                <div class="quiz-demo-actions">
+                    <a class="btn btn-danger btn-sm" href="index.html" title="取消測驗並返回首頁">取消測驗</a>
+                    <button type="button" class="btn btn-secondary btn-sm" disabled title="此功能目前停用">暫停使用</button>
+                </div>
             </form>
 
         </section>
@@ -67,7 +72,7 @@
                 <label for="user-codename" style="justify-content: center; font-weight: bold; display: flex; margin-bottom: 10px;">🏷️ 請輸入您的暱稱以進行系統綁定：</label>
                 <div style="display: flex; gap: 10px; max-width: 400px; margin: 0 auto;">
                     <input type="text" id="user-codename" placeholder="請輸入暱稱..." style="flex: 1; padding: 10px; border: 1px solid #cbd5e0; border-radius: 8px; font-size: 15px;">
-                    <button type="button" id="name-btn" style="width: auto; padding: 10px 20px; font-size: 15px;">確認送出</button>
+                    <button type="button" id="name-btn" class="btn btn-success" title="確認並送出你的暱稱">確認送出</button>
                 </div>
                 <p id="name-output" style="margin-top: 15px; font-weight: bold; font-size: 16px; text-align: center;"></p>
             </div>

@@ -4,28 +4,29 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>互動網頁作業 - 首頁</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@6.0.0-alpha.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-B/GM4XqrwHnWXNOWMbloTmrYXZg10cakYGmpfsR/bbzQ6JAJI4ihuyADKLnBgrCe" crossorigin="anonymous">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <nav class="navbar">
-        <div class="logo">✨ 互動宇宙</div>
+        <div class="logo">✨ 互動宇宙 [ Bootstrap 版]</div>
        
         <ul class="nav-links">
-            <li><a href="index.html" class="active">首頁</a></li>
-            <li><a href="quiz.html">進行測驗</a></li>
+            <li><a href="index.html" class="active" title="返回互動宇宙首頁">首頁</a></li>
+            <li><a href="quiz.html" title="前往互動測驗">進行測驗</a></li>
         </ul>
     </nav>
 
     <main class="container">
         <div style="margin: 5px; text-align: center;">
-            <a href="路怒症.html" >路怒症 小測驗 [第九堂作業]</a>
+            <a class="btn btn-outline-primary btn-sm" href="路怒症.html" title="前往路怒症小測驗">路怒症小測驗 [第九堂作業]</a>
         </div>
         <div class="home-panel">
             <header class="hero">
                 <h1>🔮 歡迎來到互動宇宙</h1>
                 <p>這是一個結合 CSS 特效與 JavaScript 邏輯的多頁式互動網站。</p>
-                <a href="quiz.html?playMusic=1" style="display: inline-block; background: white; color: #5a67d8; padding: 12px 30px; border-radius: 25px; font-weight: bold; text-decoration: none; box-shadow: 0 4px 10px rgba(0,0,0,0.15); transition: transform 0.2s;">前往下一頁測驗 ➔</a>
+                <a class="btn btn-lg hero-quiz-link" href="quiz.html?playMusic=1" title="開始測驗並播放背景音樂">前往下一頁測驗 ➔</a>
             </header>
 
             <section id="about" class="quiz-container">
@@ -44,7 +45,28 @@
                 </div>
             </section>
         </div>
+
+        <div class="index-action-row">
+            <button type="button" id="showTongueTwister" class="btn btn-primary btn-lg" title="開啟繞口令視窗">顯示繞口令</button>
+            <button type="button" class="btn btn-outline-danger btn-lg" disabled title="這個按鈕目前停用">這是 Disabled 按鈕</button>
+        </div>
+
     </main>
+
+    <dialog class="dialog bg-white" id="tongueTwisterModal" aria-labelledby="tongueTwisterTitle">
+        <div class="dialog-header">
+            <h2 class="dialog-title" id="tongueTwisterTitle">繞口令</h2>
+            <button type="button" class="btn-close" id="closeTongueTwister" aria-label="關閉"></button>
+        </div>
+        <div class="dialog-body tongue-twister-text">
+            <p>黑化肥發灰，灰化肥發黑。</p>
+            <p>黑化肥發灰會揮發，灰化肥揮發會發黑。</p>
+            <p>黑化肥揮發發灰會花飛，灰化肥揮發發黑會飛花。</p>
+        </div>
+        <div class="dialog-footer">
+            <button type="button" class="btn btn-secondary" id="closeTongueTwisterFooter">關閉視窗</button>
+        </div>
+    </dialog>
 
     <audio id="home-music" preload="metadata" autoplay loop hidden>
         <source src="輕音樂.mp3" type="audio/mpeg">
@@ -59,7 +81,22 @@
         homeMusic.play().catch(function() {
             // 若瀏覽器限制自動播放，可用 ?showplayer=1 顯示播放器手動播放。
         });
-    </script>
 
+        const tongueTwisterDialog = document.getElementById('tongueTwisterModal');
+        document.getElementById('showTongueTwister').addEventListener('click', function() {
+            tongueTwisterDialog.showModal();
+        });
+        document.getElementById('closeTongueTwister').addEventListener('click', function() {
+            tongueTwisterDialog.close();
+        });
+        document.getElementById('closeTongueTwisterFooter').addEventListener('click', function() {
+            tongueTwisterDialog.close();
+        });
+        tongueTwisterDialog.addEventListener('click', function(event) {
+            if (event.target === tongueTwisterDialog) {
+                tongueTwisterDialog.close();
+            }
+        });
+    </script>
 </body>
 </html>
