@@ -1,5 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
 
+
+    
     const music = document.getElementById('totoro-music');
     if (music) {
         const tryPlayMusic = function() {
