@@ -15,9 +15,9 @@
     h1 { margin: 14px 0 8px; font-size: clamp(2rem, 6vw, 3.1rem); letter-spacing: -.04em; }
     .lead { margin: 0; color: var(--muted); line-height: 1.7; }
     .search { display: flex; gap: 10px; margin: 26px 0 0; }
-    select, button { min-height: 48px; border-radius: 12px; font: inherit; }
-    select { flex: 1; min-width: 0; padding: 0 15px; border: 1px solid #dce5de; outline: none; background: white; color: var(--ink); }
-    select:focus { border-color: var(--green); box-shadow: 0 0 0 3px #397c621c; }
+    select, input, button { min-height: 48px; border-radius: 12px; font: inherit; }
+    select, .custom-location { flex: 1; min-width: 0; padding: 0 15px; border: 1px solid #dce5de; outline: none; background: white; color: var(--ink); }
+    select:focus, .custom-location:focus { border-color: var(--green); box-shadow: 0 0 0 3px #397c621c; }
     button { padding: 0 20px; border: 0; background: var(--green); color: white; font-weight: 700; cursor: pointer; }
     button:hover { background: #2e694f; }
     #status { min-height: 0; margin: 0; color: var(--muted); font-size: .9rem; }
@@ -66,7 +66,9 @@
         <option value="澎湖">澎湖</option>
         <option value="金門">金門</option>
         <option value="連江">馬祖</option>
+        <option value="other">其他</option>
       </select>
+      <input id="customLocation" class="custom-location" type="text" placeholder="輸入地點，例如：淡水" aria-label="輸入其他地點" hidden>
       <button type="submit" id="searchButton">查詢天氣</button>
     </form>
     <div id="status" role="status">正在載入台北的最新預報…</div>
@@ -76,12 +78,13 @@
     </section>
     <div class="panel"><div class="panel-label">穿搭建議</div><p id="advice" style="margin:8px 0 0">天氣資料載入後，建議就會出現在這裡。</p></div>
     <h2>每日預報</h2>
-    <section id="forecast" class="days" aria-label="未來五天天氣預報"></section>
+    <section id="forecast" class="days" aria-label="未來七天天氣預報"></section>
     <p class="foot">天氣資料由 <a href="https://open-meteo.com/" target="_blank" rel="noreferrer">Open-Meteo</a> 提供，每次查詢都會連線取得最新預報。</p>
   </main>
   <script>
     const form = document.querySelector("#searchForm");
     const citySelect = document.querySelector("#citySelect");
+    const customLocation = document.querySelector("#customLocation");
     const statusText = document.querySelector("#status");
     const button = document.querySelector("#searchButton");
     // 地名 API 的搜尋關鍵字以英文較可靠，將常見台灣地名轉成 API 可辨識的名稱
@@ -94,22 +97,25 @@
       "嘉義": "Chiayi", "嘉義市": "Chiayi", "嘉義縣": "Taibao", "台南": "Tainan", "臺南": "Tainan", "台南市": "Tainan", "臺南市": "Tainan",
       "高雄": "Kaohsiung", "高雄市": "Kaohsiung", "屏東": "Pingtung", "屏東縣": "Pingtung", "宜蘭": "Yilan", "宜蘭縣": "Yilan",
       "花蓮": "Hualien", "花蓮縣": "Hualien", "台東": "Taitung", "臺東": "Taitung", "台東縣": "Taitung", "臺東縣": "Taitung",
-      "澎湖": "Magong", "澎湖縣": "Magong", "金門": "Kinmen", "金門縣": "Kinmen", "連江": "Matsu", "連江縣": "Matsu"
+      "澎湖": "Magong", "澎湖縣": "Magong", "金門": "Kinmen", "金門縣": "Kinmen", "連江": "Matsu", "連江縣": "Matsu", "馬祖": "Matsu"
     };
 
     // 查詢城市座標，再使用座標取得最新天氣預報
     async function loadWeather(city) {
+      if (button.disabled) return;
       if (!city.trim()) {
-        statusText.textContent = "請先輸入城市名稱。";
+        statusText.textContent = "請先輸入地點名稱。";
         return;
       }
-      const selectedPlaceName = citySelect.selectedOptions[0].textContent;
+      const selectedPlaceName = citySelect.value === "other" ? city.trim() : citySelect.selectedOptions[0].textContent;
       document.querySelector("#locationLabel").textContent = `${selectedPlaceName}｜未來 7 天最高溫`;
       document.querySelector("#highest").textContent = "--°";
       document.querySelector("#average").textContent = "--°";
       document.querySelector("#advice").textContent = "正在取得天氣資料…";
       document.querySelector("#forecast").innerHTML = "";
       button.disabled = true;
+      citySelect.disabled = true;
+      customLocation.disabled = true;
       statusText.textContent = `正在查詢「${city}」的最新預報…`;
       try {
         const geoUrl = new URL("https://geocoding-api.open-meteo.com/v1/search");
@@ -119,7 +125,7 @@
         if (!geoResponse.ok) throw new Error("城市查詢服務暫時無法使用。");
         const geoData = await geoResponse.json();
         const place = geoData.results?.[0];
-        if (!place) throw new Error("找不到這個地點，請試試台北或高雄，或輸入英文城市名稱。");
+        if (!place) throw new Error(`找不到「${city}」，請確認地點名稱後再試。`);
 
         const weatherUrl = new URL("https://api.open-meteo.com/v1/forecast");
         weatherUrl.search = new URLSearchParams({
@@ -137,6 +143,8 @@
         statusText.textContent = `${error.message} 請確認網路連線後再試。`;
       } finally {
         button.disabled = false;
+        citySelect.disabled = false;
+        customLocation.disabled = false;
       }
     }
 
@@ -177,7 +185,7 @@
       document.querySelector("#average").textContent = `${averageTemp}°C`;
       document.querySelector("#advice").textContent = outfit;
 
-      // 將五天的預報陣列逐筆轉成網頁卡片
+      // 將七天的預報陣列逐筆轉成網頁卡片
       const cards = daily.time.map((date, index) => {
         const rain = rainChances[index];
         let umbrellaAdvice;
@@ -199,9 +207,23 @@
 
     form.addEventListener("submit", (event) => {
       event.preventDefault();
-      loadWeather(citySelect.value);
+      const place = citySelect.value === "other" ? customLocation.value : citySelect.value;
+      loadWeather(place);
     });
     citySelect.addEventListener("change", () => {
+      if (citySelect.value === "other") {
+        customLocation.hidden = false;
+        customLocation.focus();
+        document.querySelector("#locationLabel").textContent = "其他地點｜未來 7 天最高溫";
+        document.querySelector("#highest").textContent = "--°";
+        document.querySelector("#average").textContent = "--°";
+        document.querySelector("#advice").textContent = "請輸入地點，再按查詢天氣。";
+        document.querySelector("#forecast").innerHTML = "";
+        statusText.textContent = "";
+        return;
+      }
+      customLocation.hidden = true;
+      customLocation.value = "";
       loadWeather(citySelect.value);
     });
     loadWeather(citySelect.value);
