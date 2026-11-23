@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f4f7f4">
+  <title>天氣穿搭小幫手｜第12堂課作業</title>
+  <style>
+    :root { color-scheme: light; --ink: #24372f; --muted: #718078; --green: #397c62; --line: #e5ebe6; }
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; padding: 42px 20px; color: var(--ink); background: #f4f7f4; font-family: "Segoe UI", "Noto Sans TC", sans-serif; }
+    main { width: min(100%, 820px); margin: auto; }
+    .topline { display: flex; justify-content: space-between; align-items: center; gap: 12px; color: var(--green); font-size: .82rem; font-weight: 700; letter-spacing: .08em; }
+    .sun { font-size: 1.35rem; }
+    h1 { margin: 14px 0 8px; font-size: clamp(2rem, 6vw, 3.1rem); letter-spacing: -.04em; }
+    .lead { margin: 0; color: var(--muted); line-height: 1.7; }
+    .search { display: flex; gap: 10px; margin: 26px 0 0; }
+    select, button { min-height: 48px; border-radius: 12px; font: inherit; }
+    select { flex: 1; min-width: 0; padding: 0 15px; border: 1px solid #dce5de; outline: none; background: white; color: var(--ink); }
+    select:focus { border-color: var(--green); box-shadow: 0 0 0 3px #397c621c; }
+    button { padding: 0 20px; border: 0; background: var(--green); color: white; font-weight: 700; cursor: pointer; }
+    button:hover { background: #2e694f; }
+    #status { min-height: 0; margin: 0; color: var(--muted); font-size: .9rem; }
+    .summary { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 10px 0; }
+    .panel { padding: 21px; border: 1px solid var(--line); border-radius: 18px; background: white; }
+    .panel-label { color: var(--muted); font-size: .85rem; }
+    .big { display: block; margin-top: 6px; font-size: 2rem; font-weight: 750; }
+    #advice { margin: 0; color: var(--green); font-size: 1.08rem; font-weight: 700; line-height: 1.6; }
+    h2 { margin: 30px 0 12px; font-size: 1.15rem; }
+    .days { display: grid; grid-template-columns: repeat(7, minmax(88px, 1fr)); gap: 10px; overflow-x: auto; padding-bottom: 6px; }
+    .day { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; gap: 9px; min-height: 126px; padding: 14px 8px; border: 1px solid var(--line); border-radius: 12px; background: white; text-align: center; }
+    .day-date { color: var(--muted); font-size: .78rem; }
+    .day-temp { font-size: .9rem; font-weight: 750; }
+    .day-temp-label { display: block; margin-bottom: 4px; color: var(--muted); font-size: .72rem; font-weight: 400; }
+    .day-rain { color: #6383a0; font-size: .76rem; line-height: 1.5; text-align: center; }
+    .foot { margin-top: 22px; color: var(--muted); font-size: .82rem; line-height: 1.7; }
+    .foot a { color: var(--green); }
+    @media (max-width: 580px) { body { padding: 30px 16px; } .days { grid-template-columns: repeat(7, 92px); } .day { gap: 8px; padding: 12px 6px; } .day-date { font-size: .72rem; } .day-temp { font-size: .82rem; } .day-temp-label, .day-rain { font-size: .68rem; } }
+    @media (max-width: 390px) { .summary { grid-template-columns: 1fr; } .search { gap: 7px; } button { padding: 0 13px; } }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="topline"><span class="sun" aria-hidden="true">☀️</span></div>
+    <h1>天氣穿搭小幫手</h1>
+    <p class="lead">查詢所在地未來 7 天預報，看看出門適合怎麼穿。</p>
+    <form class="search" id="searchForm">
+      <select id="citySelect" aria-label="選擇查詢地點">
+        <option value="台北" selected>台北</option>
+        <option value="新北">新北</option>
+        <option value="基隆">基隆</option>
+        <option value="桃園">桃園</option>
+        <option value="新竹市">新竹</option>
+        <option value="苗栗">苗栗</option>
+        <option value="台中">台中</option>
+        <option value="彰化">彰化</option>
+        <option value="南投">南投</option>
+        <option value="雲林">雲林</option>
+        <option value="嘉義市">嘉義</option>
+        <option value="台南">台南</option>
+        <option value="高雄">高雄</option>
+        <option value="屏東">屏東</option>
+        <option value="宜蘭">宜蘭</option>
+        <option value="花蓮">花蓮</option>
+        <option value="台東">台東</option>
+        <option value="澎湖">澎湖</option>
+        <option value="金門">金門</option>
+        <option value="連江">馬祖</option>
+      </select>
+      <button type="submit" id="searchButton">查詢天氣</button>
+    </form>
+    <div id="status" role="status">正在載入台北的最新預報…</div>
+    <section class="summary" aria-live="polite">
+      <div class="panel"><div class="panel-label" id="locationLabel">未來 7 天最高溫</div><strong class="big" id="highest">--°</strong></div>
+      <div class="panel"><div class="panel-label">平均氣溫（四捨五入）</div><strong class="big" id="average">--°</strong></div>
+    </section>
+    <div class="panel"><div class="panel-label">穿搭建議</div><p id="advice" style="margin:8px 0 0">天氣資料載入後，建議就會出現在這裡。</p></div>
+    <h2>每日預報</h2>
+    <section id="forecast" class="days" aria-label="未來五天天氣預報"></section>
+    <p class="foot">天氣資料由 <a href="https://open-meteo.com/" target="_blank" rel="noreferrer">Open-Meteo</a> 提供，每次查詢都會連線取得最新預報。</p>
+  </main>
+  <script>
+    const form = document.querySelector("#searchForm");
+    const citySelect = document.querySelector("#citySelect");
+    const statusText = document.querySelector("#status");
+    const button = document.querySelector("#searchButton");
+    // 地名 API 的搜尋關鍵字以英文較可靠，將常見台灣地名轉成 API 可辨識的名稱
+    const cityAliases = {
+      "台北": "Taipei", "臺北": "Taipei", "台北市": "Taipei", "臺北市": "Taipei",
+      "新北": "New Taipei City", "新北市": "New Taipei City", "基隆": "Keelung", "基隆市": "Keelung",
+      "桃園": "Taoyuan", "桃園市": "Taoyuan", "新竹": "Hsinchu", "新竹市": "Hsinchu", "新竹縣": "Zhubei",
+      "苗栗": "Miaoli", "苗栗縣": "Miaoli", "台中": "Taichung", "臺中": "Taichung", "台中市": "Taichung", "臺中市": "Taichung",
+      "彰化": "Changhua", "彰化縣": "Changhua", "南投": "Nantou", "南投縣": "Nantou", "雲林": "Douliu", "雲林縣": "Douliu",
+      "嘉義": "Chiayi", "嘉義市": "Chiayi", "嘉義縣": "Taibao", "台南": "Tainan", "臺南": "Tainan", "台南市": "Tainan", "臺南市": "Tainan",
+      "高雄": "Kaohsiung", "高雄市": "Kaohsiung", "屏東": "Pingtung", "屏東縣": "Pingtung", "宜蘭": "Yilan", "宜蘭縣": "Yilan",
+      "花蓮": "Hualien", "花蓮縣": "Hualien", "台東": "Taitung", "臺東": "Taitung", "台東縣": "Taitung", "臺東縣": "Taitung",
+      "澎湖": "Magong", "澎湖縣": "Magong", "金門": "Kinmen", "金門縣": "Kinmen", "連江": "Matsu", "連江縣": "Matsu"
+    };
+
+    // 查詢城市座標，再使用座標取得最新天氣預報
+    async function loadWeather(city) {
+      if (!city.trim()) {
+        statusText.textContent = "請先輸入城市名稱。";
+        return;
+      }
+      const selectedPlaceName = citySelect.selectedOptions[0].textContent;
+      document.querySelector("#locationLabel").textContent = `${selectedPlaceName}｜未來 7 天最高溫`;
+      document.querySelector("#highest").textContent = "--°";
+      document.querySelector("#average").textContent = "--°";
+      document.querySelector("#advice").textContent = "正在取得天氣資料…";
+      document.querySelector("#forecast").innerHTML = "";
+      button.disabled = true;
+      statusText.textContent = `正在查詢「${city}」的最新預報…`;
+      try {
+        const geoUrl = new URL("https://geocoding-api.open-meteo.com/v1/search");
+        const searchName = cityAliases[city.trim()] ?? city.trim();
+        geoUrl.search = new URLSearchParams({ name: searchName, count: "10", language: "zh", format: "json", countryCode: "TW" });
+        const geoResponse = await fetch(geoUrl);
+        if (!geoResponse.ok) throw new Error("城市查詢服務暫時無法使用。");
+        const geoData = await geoResponse.json();
+        const place = geoData.results?.[0];
+        if (!place) throw new Error("找不到這個地點，請試試台北或高雄，或輸入英文城市名稱。");
+
+        const weatherUrl = new URL("https://api.open-meteo.com/v1/forecast");
+        weatherUrl.search = new URLSearchParams({
+          latitude: place.latitude,
+          longitude: place.longitude,
+          daily: "temperature_2m_max,temperature_2m_min,precipitation_probability_max",
+          forecast_days: "7",
+          timezone: "auto"
+        });
+        const weatherResponse = await fetch(weatherUrl);
+        if (!weatherResponse.ok) throw new Error("天氣服務暫時無法使用，請稍後再試。");
+        const weather = await weatherResponse.json();
+        showWeather(place, weather.daily, selectedPlaceName);
+      } catch (error) {
+        statusText.textContent = `${error.message} 請確認網路連線後再試。`;
+      } finally {
+        button.disabled = false;
+      }
+    }
+
+    function showWeather(place, daily, selectedPlaceName) {
+      // API 回傳的每日溫度資料放進陣列，供後續計算與判斷
+      const highs = daily.temperature_2m_max;
+      const lows = daily.temperature_2m_min;
+      const rainChances = daily.precipitation_probability_max;
+      const dailyMeans = highs.map((high, index) => (high + lows[index]) / 2);
+
+      // 使用 Math.max 找最高溫、Math.round 將平均氣溫四捨五入
+      const highestTemp = Math.max(...highs);
+      const averageTemp = Math.round(dailyMeans.reduce((sum, temp) => sum + temp, 0) / dailyMeans.length);
+      const coldestTemp = Math.min(...lows);
+      const maxRainChance = Math.max(...rainChances);
+
+      // 多層 if...else 依氣溫及降雨機率給穿搭建議
+      let outfit;
+      if (coldestTemp < 15) {
+        outfit = "氣溫偏低，記得穿外套保暖。";
+      } else if (highestTemp < 25) {
+        outfit = "天氣舒適，薄長袖或薄外套很適合。";
+      } else if (highestTemp < 30) {
+        outfit = "天氣溫暖，建議穿輕薄透氣的衣服。";
+      } else {
+        outfit = "天氣炎熱，穿清涼衣物並記得防曬。";
+      }
+      if (maxRainChance >= 60) {
+        outfit += " 另外，未來幾天降雨機率較高，出門帶把傘吧！";
+      } else if (maxRainChance >= 30) {
+        outfit += " 部分時段可能降雨，可以準備折疊傘。";
+      } else {
+        outfit += " 目前預報降雨機率低。";
+      }
+
+      document.querySelector("#locationLabel").textContent = `${selectedPlaceName}｜未來 7 天最高溫`;
+      document.querySelector("#highest").textContent = `${Math.round(highestTemp)}°C`;
+      document.querySelector("#average").textContent = `${averageTemp}°C`;
+      document.querySelector("#advice").textContent = outfit;
+
+      // 將五天的預報陣列逐筆轉成網頁卡片
+      const cards = daily.time.map((date, index) => {
+        const rain = rainChances[index];
+        let umbrellaAdvice;
+        if (rain >= 30) {
+          umbrellaAdvice = "☂️";
+        } else {
+          umbrellaAdvice = "☀️";
+        }
+        const dateObject = new Date(`${date}T00:00:00Z`);
+        const shortDate = new Intl.DateTimeFormat("zh-TW", { month: "numeric", day: "numeric", timeZone: "UTC" }).format(dateObject);
+        const weekday = ["日", "一", "二", "三", "四", "五", "六"][dateObject.getUTCDay()];
+        const dateWithWeekday = `${shortDate}(${weekday})`;
+        const umbrellaText = rain >= 30 ? "建議帶傘" : "暫時不用帶傘";
+        return `<article class="day"><div class="day-date">${index === 0 ? "今天 " : ""}${dateWithWeekday}</div><div class="day-temp"><span class="day-temp-label">氣溫</span>${Math.round(lows[index])}°–${Math.round(highs[index])}°C</div><div class="day-rain" title="${umbrellaText}">降雨 ${rain}% ${umbrellaAdvice}</div></article>`;
+      });
+      document.querySelector("#forecast").innerHTML = cards.join("");
+      statusText.textContent = "";
+    }
+
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      loadWeather(citySelect.value);
+    });
+    citySelect.addEventListener("change", () => {
+      loadWeather(citySelect.value);
+    });
+    loadWeather(citySelect.value);
+  </script>
+</body>
+</html>
